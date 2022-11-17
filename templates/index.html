@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}问答OA-首页{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/index.ico') }}">
+{% endblock %}
+
+{% block body %}
+<div class="row" style="margin-top: 20px;">
+            <div class="col"></div>
+            <div class="col-10">
+                <ul class="question-ul">
+                  {% for question in paginate.items %}
+                    <li>
+                        <div class="side-question">
+                            <img class="side-question-avatar" src="{{ url_for('static', filename='images/avatar.jpg') }}" alt="">
+                        </div>
+                        <div class="question-main">
+                            <div class="question-title"><a href="{{ url_for('qa.detail',qa_id=question.id) }}">{{ question.title }}</a></div>
+                            {% if  question.author_id%}
+                            <div class="question-content">{{ question.content }}</div>
+                            <div class="question-detail">
+                                <span class="question-author">{{ question.author.username }}</span>
+                                <span class="question-time">{{ question.create_time }}</span>
+                            </div>
+                            {% else  %}
+                            <div class="question-detail">
+                                <span class="question-author">admin</span>
+                                <span class="question-time">{{ question.create_time }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+            </div>
+            <div class="col"></div>
+        </div>
+
+         <span class="input-group-btn"><a class="btn btn-default" href="{{ url_for('qa.index') }}?page={{ paginate.prev_num }}">上一页</a></span>
+         <select  id="selector" onchange="window.location=this.value;">
+             {% for num in range(1,paginate.pages+1) %}
+             <option value="{{ url_for('qa.index') }}?page={{ num }}"
+                     {% if num==paginate.page %} selected="selected" {% endif %}>
+                 第{{ num}}页
+             </option>
+             {% endfor %}
+         </select>
+        <span class="input-group-btn"><a class="btn btn-default" href="{{ url_for('qa.index') }}?page={{ paginate.next_num }}">下一页</a></span>
+{% endblock %}
